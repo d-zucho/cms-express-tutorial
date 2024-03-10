@@ -10,7 +10,7 @@ const getContact = (req, res) => {
 // @access Public
 const getSingleContact = (req, res) => {
   res
-    .status(201)
+    .status(200)
     .json({ message: `Get specific Contact with id ${req.params.id}` })
 }
 
@@ -26,7 +26,7 @@ const createContact = (req, res) => {
 // @access Public
 const updateContact = (req, res) => {
   res
-    .status(201)
+    .status(200)
     .json({ message: `Update specific Contact with id ${req.params.id}` })
 }
 
@@ -35,7 +35,7 @@ const updateContact = (req, res) => {
 // @access Public
 const deleteContact = (req, res) => {
   res
-    .status(201)
+    .status(200)
     .json({ message: `Delete specific Contact with id ${req.params.id}` })
 }
 
