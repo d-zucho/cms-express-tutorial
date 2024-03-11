@@ -47,14 +47,11 @@ const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body
   if (!email || !password) {
     res.status(400)
-    throw new Error('Please fill in all fields')
+    throw new Error('All fields are mandatory!')
   }
-
   const user = await User.findOne({ email })
-  // compare password with hashed password
-  // password is from the request body and user.password is from the database
+  //compare password with hashedpassword
   if (user && (await bcrypt.compare(password, user.password))) {
-    // if match, create a token
     const accessToken = jwt.sign(
       {
         user: {
@@ -63,14 +60,13 @@ const loginUser = asyncHandler(async (req, res) => {
           id: user.id,
         },
       },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '1m' }
+      process.env.ACCESS_TOKEN_SECERT,
+      { expiresIn: '15m' }
     )
     res.status(200).json({ accessToken })
   } else {
-    // if not match, throw an error
     res.status(401)
-    throw new Error('Invalid email or password')
+    throw new Error('email or password is not valid')
   }
 })
 
