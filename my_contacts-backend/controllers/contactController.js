@@ -1,18 +1,24 @@
+const Contact = require('../models/contactModel')
+
 const asyncHandler = require('express-async-handler')
 // @desc Get all contacts
 // @route GET /api/contacts
 // @access Public
 const getContact = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: 'Get all contacts' })
+  const contacts = await Contact.find()
+  res.status(200).json(contacts)
 })
 
 // @desc Get individual contact
 // @route GET /api/contacts/:id
 // @access Public
 const getSingleContact = asyncHandler(async (req, res) => {
-  res
-    .status(200)
-    .json({ message: `Get specific Contact with id ${req.params.id}` })
+  const contact = await Contact.findById(req.params.id)
+  if (!contact) {
+    res.status(404).json({ message: 'Contact not found' })
+    throw new Error('Contact not found')
+  }
+  res.status(200).json(contact)
 })
 
 // @desc Create New contact
@@ -26,25 +32,44 @@ const createContact = asyncHandler(async (req, res) => {
     res.status(400).json({ message: 'Please enter all fields' })
     throw new Error('Please enter all fields')
   }
-  res.status(201).json({ message: 'Create New Contact' })
+  const contact = await Contact.create({
+    name,
+    email,
+    phone,
+  })
+  res.status(201).json(contact)
 })
 
 // @desc Update contact
 // @route PUT /api/contacts/:id
 // @access Public
 const updateContact = asyncHandler(async (req, res) => {
-  res
-    .status(200)
-    .json({ message: `Update specific Contact with id ${req.params.id}` })
+  const contact = await Contact.findById(req.params.id)
+  if (!contact) {
+    res.status(404).json({ message: 'Contact not found' })
+    throw new Error('Contact not found')
+  }
+
+  const updatedContact = await Contact.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  )
+
+  res.status(200).json(updatedContact)
 })
 
 // @desc Delete contact
 // @route DELETE /api/contacts/:id
 // @access Public
 const deleteContact = asyncHandler(async (req, res) => {
-  res
-    .status(200)
-    .json({ message: `Delete specific Contact with id ${req.params.id}` })
+  try {
+    const contact = await Contact.findByIdAndDelete(req.params.id)
+    res.status(200).json(contact)
+  } catch (error) {
+    res.status(404).json({ message: 'Contact not found' })
+    throw new Error('Contact not found')
+  }
 })
 
 module.exports = {
