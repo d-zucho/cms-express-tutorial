@@ -2,6 +2,11 @@ const mongoose = require('mongoose')
 
 const contactSchema = new mongoose.Schema(
   {
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User', // ref is the reference to the User model. This is used to create a relationship between the Contact and User models
+      required: [true, 'User is required'],
+    },
     name: {
       type: String,
       required: [true, 'Name is required'],
